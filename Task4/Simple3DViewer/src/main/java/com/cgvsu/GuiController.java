@@ -2,6 +2,7 @@ package com.cgvsu;
 
 import com.cgvsu.normal.FindNormals;
 import com.cgvsu.objwriter.ObjWriter;
+import com.cgvsu.render_engine.Cameras;
 import com.cgvsu.render_engine.RenderEngine;
 import com.cgvsu.triangulation.Triangulation;
 import javafx.fxml.FXML;
@@ -33,6 +34,8 @@ import com.cgvsu.objreader.ObjReader;
 import com.cgvsu.render_engine.Camera;
 
 public class GuiController {
+
+    private Cameras cameras = new Cameras();
 
     private boolean drawWireframe = true; // Флаг для отрисовки полигональной сетки
     private boolean useLighting = false; //Флаг для включения освещения
@@ -74,7 +77,12 @@ public class GuiController {
 
     @FXML
     private void initialize() {
-        anchorPane.prefWidthProperty().addListener((ov, oldValue, newValue) -> canvas.setWidth(newValue.doubleValue()-scrollPaneMain.getWidth()));
+        // Добавляем несколько камер(Я не придумал как задавать положение камер в интерфейсе), методы для удаления добавления и текущей камеры находятся в классе Cameras в папке render_engine
+        cameras.addCamera(new Vector3f(0, 0, 100), new Vector3f(0, 0, 0), 1.0F, 1, 0.01F, 100);
+        cameras.addCamera(new Vector3f(50, 0, 100), new Vector3f(0, 0, 0), 1.0F, 1, 0.01F, 100);
+        cameras.addCamera(new Vector3f(-50, 0, 100), new Vector3f(0, 0, 0), 1.0F, 1, 0.01F, 100);
+
+        anchorPane.prefWidthProperty().addListener((ov, oldValue, newValue) -> canvas.setWidth(newValue.doubleValue() - scrollPaneMain.getWidth()));
         anchorPane.prefHeightProperty().addListener((ov, oldValue, newValue) -> canvas.setHeight(newValue.doubleValue()));
 
         timeline = new Timeline();
@@ -85,18 +93,23 @@ public class GuiController {
             double height = canvas.getHeight();
 
             canvas.getGraphicsContext2D().clearRect(0, 0, width, height);
-            camera.setAspectRatio((float) (width / height));
 
-            for (int i = 0; i < moreModels.size(); i++) {
-                RenderEngine.render(
-                        canvas.getGraphicsContext2D(),
-                        camera,
-                        moreModels.get(i),
-                        (int) width,
-                        (int) height,
-                        drawWireframe,
-                        useLighting
-                );
+            // Используем текущую камеру для рендеринга
+            Camera currentCamera = cameras.getCurrentCamera();
+            if (currentCamera != null) {
+                currentCamera.setAspectRatio((float) (width / height)); // Обновляем соотношение сторон для текущей камеры
+
+                for (int i = 0; i < moreModels.size(); i++) {
+                    RenderEngine.render(
+                            canvas.getGraphicsContext2D(),
+                            currentCamera, // Используем текущую камеру
+                            moreModels.get(i),
+                            (int) width,
+                            (int) height,
+                            drawWireframe,
+                            useLighting
+                    );
+                }
             }
         });
 
@@ -154,6 +167,7 @@ public class GuiController {
             listOfModelsCheckBoxes.getItems().remove(index);
         }
     }
+
     private boolean[] getCheckBoxesInfo(ListView<CheckBox> listOfModelsCheckBoxes) {
         boolean[] isSelected = new boolean[listOfModelsCheckBoxes.getItems().size()];
         for (int i = 0; i < listOfModelsCheckBoxes.getItems().size(); i++) {
@@ -162,6 +176,7 @@ public class GuiController {
         }
         return isSelected;
     }
+
     @FXML
     private void onSaveModelAsMenuItemClick() {
         if (moreModels.isEmpty()) {
@@ -189,33 +204,52 @@ public class GuiController {
             }
         }
     }
+
     @FXML
     public void handleCameraForward(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(0, 0, -TRANSLATION));
+        Camera currentCamera = cameras.getCurrentCamera();
+        if (currentCamera != null) {
+            currentCamera.movePosition(new Vector3f(0, 0, -TRANSLATION));
+        }
     }
 
     @FXML
     public void handleCameraBackward(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(0, 0, TRANSLATION));
+        Camera currentCamera = cameras.getCurrentCamera();
+        if (currentCamera != null) {
+            currentCamera.movePosition(new Vector3f(0, 0, TRANSLATION));
+        }
     }
 
     @FXML
     public void handleCameraLeft(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(TRANSLATION, 0, 0));
+        Camera currentCamera = cameras.getCurrentCamera();
+        if (currentCamera != null) {
+            currentCamera.movePosition(new Vector3f(TRANSLATION, 0, 0));
+        }
     }
 
     @FXML
     public void handleCameraRight(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(-TRANSLATION, 0, 0));
+        Camera currentCamera = cameras.getCurrentCamera();
+        if (currentCamera != null) {
+            currentCamera.movePosition(new Vector3f(-TRANSLATION, 0, 0));
+        }
     }
 
     @FXML
     public void handleCameraUp(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(0, TRANSLATION, 0));
+        Camera currentCamera = cameras.getCurrentCamera();
+        if (currentCamera != null) {
+            currentCamera.movePosition(new Vector3f(0, TRANSLATION, 0));
+        }
     }
 
     @FXML
     public void handleCameraDown(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(0, -TRANSLATION, 0));
+        Camera currentCamera = cameras.getCurrentCamera();
+        if (currentCamera != null) {
+            currentCamera.movePosition(new Vector3f(0, -TRANSLATION, 0));
+        }
     }
 }
