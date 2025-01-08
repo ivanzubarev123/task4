@@ -1,7 +1,9 @@
 package com.cgvsu;
 
+import com.cgvsu.normal.FindNormals;
 import com.cgvsu.objwriter.ObjWriter;
 import com.cgvsu.render_engine.RenderEngine;
+import com.cgvsu.triangulation.Triangulation;
 import javafx.fxml.FXML;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -20,11 +22,10 @@ import javafx.util.Duration;
 import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.io.IOException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import javax.vecmath.Vector3f;
+import com.cgvsu.math.Vector3f;
 import javafx.scene.control.*;
 
 import com.cgvsu.model.Model;
@@ -32,6 +33,9 @@ import com.cgvsu.objreader.ObjReader;
 import com.cgvsu.render_engine.Camera;
 
 public class GuiController {
+
+    private boolean drawWireframe = true; // Флаг для отрисовки полигональной сетки
+    private boolean useLighting = false; //Флаг для включения освещения
 
     @FXML
     private void onCanvasClick(MouseEvent mouseEvent) {
@@ -84,7 +88,15 @@ public class GuiController {
             camera.setAspectRatio((float) (width / height));
 
             for (int i = 0; i < moreModels.size(); i++) {
-                RenderEngine.render(canvas.getGraphicsContext2D(), camera, moreModels.get(i), (int) width, (int) height);
+                RenderEngine.render(
+                        canvas.getGraphicsContext2D(),
+                        camera,
+                        moreModels.get(i),
+                        (int) width,
+                        (int) height,
+                        drawWireframe,
+                        useLighting
+                );
             }
         });
 
@@ -107,16 +119,21 @@ public class GuiController {
 
         try {
             String fileContent = Files.readString(fileName);
-            moreModels.add(ObjReader.read(fileContent));
-            // обработка ошибок
+            Model model = ObjReader.read(fileContent);
+
+            Triangulation.triangulate(model);
+
+            FindNormals.findNormals(model);
+
+            moreModels.add(model);
         } catch (Exception exception) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Ошибка");
             alert.setHeaderText("Ошибка в чтении файла");
             alert.setContentText(exception.getMessage());
             alert.showAndWait();
-
         }
+
         listOfModels.getItems().add(file.getName());
         listOfModelsCheckBoxes.getItems().add(createCheckBox());
     }

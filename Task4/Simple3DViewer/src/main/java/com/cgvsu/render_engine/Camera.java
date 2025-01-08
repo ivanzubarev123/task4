@@ -1,8 +1,16 @@
 package com.cgvsu.render_engine;
-import javax.vecmath.Vector3f;
-import javax.vecmath.Matrix4f;
+
+import com.cgvsu.math.*;
 
 public class Camera {
+
+    private Vector3f position; // Позиция камеры
+    private Vector3f target;   // Цель камеры
+    private float fov;         // Угол обзора (в радианах)
+    private float aspectRatio; // Соотношение сторон
+    private float nearPlane;   // Ближняя плоскость отсечения
+    private float farPlane;    // Дальняя плоскость отсечения
+    private Vector3f lightPosition; // Позиция источника света
 
     public Camera(
             final Vector3f position,
@@ -17,6 +25,7 @@ public class Camera {
         this.aspectRatio = aspectRatio;
         this.nearPlane = nearPlane;
         this.farPlane = farPlane;
+        this.lightPosition = new Vector3f(0, 0, 0); // Инициализация позиции света
     }
 
     public void setPosition(final Vector3f position) {
@@ -44,21 +53,22 @@ public class Camera {
     }
 
     public void moveTarget(final Vector3f translation) {
-        this.target.add(target);
+        this.target.add(translation); // Исправлено: добавляем translation, а не target
     }
 
-    Matrix4f getViewMatrix() {
+    public Matrix4f getViewMatrix() {
         return GraphicConveyor.lookAt(position, target);
     }
 
-    Matrix4f getProjectionMatrix() {
+    public Matrix4f getProjectionMatrix() {
         return GraphicConveyor.perspective(fov, aspectRatio, nearPlane, farPlane);
     }
 
-    private Vector3f position;
-    private Vector3f target;
-    private float fov;
-    private float aspectRatio;
-    private float nearPlane;
-    private float farPlane;
+    public Vector3f getLightPosition() {
+        return lightPosition;
+    }
+
+    public void setLightPosition(Vector3f lightPosition) {
+        this.lightPosition = lightPosition;
+    }
 }
