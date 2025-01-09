@@ -5,7 +5,7 @@
 <?import javafx.scene.input.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="anchorPane"  xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cgvsu.GuiController">
+<AnchorPane fx:id="anchorPane" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cgvsu.GuiController">
     <MenuBar>
         <Menu mnemonicParsing="false" text="File">
             <MenuItem mnemonicParsing="false" onAction="#onOpenModelMenuItemClick" text="Load Model">
@@ -72,7 +72,7 @@
                                 <children>
                                     <CheckBox fx:id="drawLines" mnemonicParsing="false" onAction="#checkBoxDrawLine" text="Draw Lines" />
                                     <CheckBox fx:id="useLight" mnemonicParsing="false" onAction="#checkBoxUseLight" text="Light" />
-                           <Button fx:id="themeToggleButton" mnemonicParsing="false" onAction="#handleThemeToggle" text="Button" />
+                           <Button fx:id="themeToggleButton" mnemonicParsing="false" onAction="#handleThemeToggle" text="Theme" />
                                 </children>
                             </HBox>
                         </children>
