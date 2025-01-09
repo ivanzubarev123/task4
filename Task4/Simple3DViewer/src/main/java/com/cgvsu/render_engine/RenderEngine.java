@@ -3,6 +3,7 @@ package com.cgvsu.render_engine;
 import com.cgvsu.math.*;
 import javafx.scene.canvas.GraphicsContext;
 import com.cgvsu.model.Model;
+import javafx.scene.paint.Color;
 
 import static com.cgvsu.RasterizeTriangle.RasterizeTriangle.rasterizeTriangle;
 import static com.cgvsu.render_engine.GraphicConveyor.*;
@@ -92,7 +93,7 @@ public class RenderEngine {
         Point2f p2 = GraphicConveyor.vertexToPoint(v2, width, height);
         Point2f p3 = GraphicConveyor.vertexToPoint(v3, width, height);
 
-        graphicsContext.setStroke(javafx.scene.paint.Color.BLACK);
+        graphicsContext.setStroke(Color.RED);
         graphicsContext.strokeLine(p1.x, p1.y, p2.x, p2.y);
         graphicsContext.strokeLine(p2.x, p2.y, p3.x, p3.y);
         graphicsContext.strokeLine(p3.x, p3.y, p1.x, p1.y);

@@ -10,6 +10,7 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ScrollPane;
@@ -18,6 +19,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
+import javafx.scene.control.Button;
 
 
 import java.io.FileWriter;
@@ -34,6 +36,12 @@ import com.cgvsu.objreader.ObjReader;
 import com.cgvsu.render_engine.Camera;
 
 public class GuiController {
+
+    @FXML
+    private CheckBox useLight;
+
+    @FXML
+    private CheckBox drawLines;
 
     private Cameras cameras = new Cameras();
 
@@ -88,6 +96,8 @@ public class GuiController {
         timeline = new Timeline();
         timeline.setCycleCount(Animation.INDEFINITE);
 
+        drawLines.setSelected(drawWireframe);
+
         KeyFrame frame = new KeyFrame(Duration.millis(15), event -> {
             double width = canvas.getWidth();
             double height = canvas.getHeight();
@@ -115,6 +125,16 @@ public class GuiController {
 
         timeline.getKeyFrames().add(frame);
         timeline.play();
+    }
+    @FXML
+    private void checkBoxUseLight(){
+        useLighting = !useLighting;
+        useLight.setSelected(useLighting);
+    }
+    @FXML
+    private void checkBoxDrawLine(){
+        drawWireframe = !drawWireframe;
+        drawLines.setSelected(drawWireframe);
     }
 
     @FXML
@@ -211,9 +231,7 @@ public class GuiController {
         if (currentCamera != null) {
             currentCamera.movePosition(new Vector3f(0, 0, -TRANSLATION));
         }
-    }
-
-    @FXML
+    }@FXML
     public void handleCameraBackward(ActionEvent actionEvent) {
         Camera currentCamera = cameras.getCurrentCamera();
         if (currentCamera != null) {
@@ -251,5 +269,47 @@ public class GuiController {
         if (currentCamera != null) {
             currentCamera.movePosition(new Vector3f(0, -TRANSLATION, 0));
         }
+    }
+    @FXML
+    private void handleRemoveCamera(ActionEvent event) {
+        int index = cameras.getCurrentCameraIndex();
+        cameras.removeCamera(index);
+        System.out.println("Camera at index " + index + " removed.");
+    }
+
+    @FXML
+    private void handleSwitchToNextCamera(ActionEvent event) {
+        cameras.switchToNextCamera();
+        System.out.println("Switched to camera at index " + cameras.getCurrentCameraIndex());
+    }
+
+    @FXML
+    private void handleGetCurrentCamera(ActionEvent event) {
+        Camera currentCamera = cameras.getCurrentCamera();
+        if (currentCamera != null) {
+            System.out.println("Current camera: " + currentCamera);
+        } else {
+            System.out.println("No cameras available.");
+        }
+    }
+
+    private boolean isDarkTheme = false; // Флаг для отслеживания текущей темы
+
+    @FXML
+    private void handleThemeToggle() {
+        isDarkTheme = !isDarkTheme;
+
+        // Переключаем тему
+        if (isDarkTheme) {
+            applyTheme("dark_style.css");
+        } else {
+            applyTheme("light_style.css");
+        }
+    }
+
+    private void applyTheme(String theme) {
+        // Удаляем текущие стили и добавляем новые
+        anchorPane.getStylesheets().clear();
+        anchorPane.getStylesheets().add(getClass().getResource("/com.cgvsu.styles/" + theme).toExternalForm());
     }
 }

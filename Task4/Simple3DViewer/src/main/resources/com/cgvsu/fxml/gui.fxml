@@ -5,15 +5,15 @@
 <?import javafx.scene.input.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="anchorPane" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cgvsu.GuiController">
+<AnchorPane fx:id="anchorPane"  xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cgvsu.GuiController">
     <MenuBar>
         <Menu mnemonicParsing="false" text="File">
             <MenuItem mnemonicParsing="false" onAction="#onOpenModelMenuItemClick" text="Load Model">
-            <accelerator>
-                <KeyCodeCombination alt="UP" code="F" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-            </accelerator>
+                <accelerator>
+                    <KeyCodeCombination alt="UP" code="F" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                </accelerator>
             </MenuItem>
-         <MenuItem mnemonicParsing="false" onAction="#onSaveModelAsMenuItemClick" text="Save Model" />
+            <MenuItem mnemonicParsing="false" onAction="#onSaveModelAsMenuItemClick" text="Save Model" />
         </Menu>
         <Menu mnemonicParsing="false" text="Camera Options">
             <MenuItem mnemonicParsing="false" onAction="#handleCameraForward" text="Forward">
@@ -47,24 +47,38 @@
                 </accelerator>
             </MenuItem>
         </Menu>
+        <!-- Новое меню для управления камерами -->
+        <Menu mnemonicParsing="false" text="Camera Management">
+            <MenuItem mnemonicParsing="false" onAction="#handleRemoveCamera" text="Remove Camera" />
+            <MenuItem mnemonicParsing="false" onAction="#handleSwitchToNextCamera" text="Switch to Next Camera" />
+            <MenuItem mnemonicParsing="false" onAction="#handleGetCurrentCamera" text="Get Current Camera" />
+        </Menu>
     </MenuBar>
 
     <Canvas fx:id="canvas" height="870" onMouseClicked="#onCanvasClick" width="1600" AnchorPane.topAnchor="30.0" />
-   <ScrollPane fx:id="scrollPaneMain" fitToHeight="true" fitToWidth="true" prefWidth="300.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-     <content>
-       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
-            <children>
-               <VBox>
-                  <children>
-                     <HBox>
+    <ScrollPane fx:id="scrollPaneMain" fitToHeight="true" fitToWidth="true" prefWidth="300.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <content>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
+                <children>
+                    <VBox>
                         <children>
-                           <ListView fx:id="listOfModels" onMouseClicked="#handleListOfModelsClick" prefWidth="150.0" />
-                           <ListView fx:id="listOfModelsCheckBoxes" prefWidth="150.0" />
+                            <HBox>
+                                <children>
+                                    <ListView fx:id="listOfModels" onMouseClicked="#handleListOfModelsClick" prefWidth="150.0" />
+                                    <ListView fx:id="listOfModelsCheckBoxes" prefWidth="150.0" />
+                                </children>
+                            </HBox>
+                            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                                <children>
+                                    <CheckBox fx:id="drawLines" mnemonicParsing="false" onAction="#checkBoxDrawLine" text="Draw Lines" />
+                                    <CheckBox fx:id="useLight" mnemonicParsing="false" onAction="#checkBoxUseLight" text="Light" />
+                           <Button fx:id="themeToggleButton" mnemonicParsing="false" onAction="#handleThemeToggle" text="Button" />
+                                </children>
+                            </HBox>
                         </children>
-                     </HBox>
-                  </children>
-               </VBox>
-            </children></AnchorPane>
-     </content>
-   </ScrollPane>
+                    </VBox>
+                </children>
+            </AnchorPane>
+        </content>
+    </ScrollPane>
 </AnchorPane>
